@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode } from "html5-qrcode"
-<<<<<<< HEAD
 
-=======
->>>>>>> bf35736dc608132c7b6154b3da168261d5396efd
 
 type Product = {
   product: string
