@@ -1,76 +1,75 @@
-import { useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { useEffect, useRef, useState } from "react"
+import { Html5Qrcode } from "html5-qrcode"
+
+type Product = {
+  product: string
+  price: number
+  stock: number
+}
 
 export default function App() {
-  const [result, setResult] = useState("");
-  const [data, setData] = useState(null);
-  const [scanner, setScanner] = useState(null);
+  const qrRef = useRef<HTMLDivElement | null>(null)
+  const qrScannerRef = useRef<Html5Qrcode | null>(null)
+
+  const [result, setResult] = useState<string>("")
+  const [data, setData] = useState<Product | null>(null)
 
   const startScan = async () => {
-    const qr = new Html5Qrcode("reader");
-    setScanner(qr);
+    if (!qrRef.current) return
 
-    await qr.start(
-      { facingMode: { exact: "environment" } },
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        disableFlip: true,
-      },
-      (decodedText) => {
-        qr.stop();
-        setResult(decodedText);
-        callWebhook(decodedText);
-      },
-      () => {}
-    );
-  };
-
-  const callWebhook = async (code) => {
-    try {
-      const res = await fetch("https://YOUR_WEBHOOK_URL", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code,
-          source: "react-qr-scan",
-          time: new Date().toISOString(),
-        }),
-      });
-
-      const json = await res.json();
-      setData(json);
-    } catch (err) {
-      alert("Lỗi gọi webhook");
+    if (!qrScannerRef.current) {
+      qrScannerRef.current = new Html5Qrcode(qrRef.current.id)
     }
-  };
+
+    await qrScannerRef.current.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (decodedText: string) => {
+        setResult(decodedText)
+        await qrScannerRef.current?.stop()
+        callWebhook(decodedText)
+      }
+    )
+  }
+
+  const callWebhook = async (code: string) => {
+    const res = await fetch("https://YOUR_WEBHOOK_URL", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    })
+
+    const json: Product = await res.json()
+    setData(json)
+  }
+
+  useEffect(() => {
+    return () => {
+      qrScannerRef.current?.stop().catch(() => {})
+    }
+  }, [])
 
   return (
-    <div style={{ textAlign: "center", padding: 16 }}>
-      <h2>📷 Quét QR / Barcode</h2>
+    <div style={{ padding: 20 }}>
+      <h2>QR / Barcode Scanner</h2>
 
-      <button onClick={startScan}>Bắt đầu quét</button>
+      <button onClick={startScan}>Quét QR</button>
 
       <div
-        id="reader"
-        style={{
-          width: 320,
-          margin: "16px auto",
-          border: "3px solid #4caf50",
-          borderRadius: 12,
-        }}
+        id="qr-reader"
+        ref={qrRef}
+        style={{ width: 300, marginTop: 20 }}
       />
 
-      {result && <p>✅ Mã quét: {result}</p>}
+      {result && <p>Code: {result}</p>}
 
       {data && (
         <div>
-          <h3>📦 Kết quả</h3>
-          <p>Sản phẩm: {data.product}</p>
-          <p>Giá: {data.price}</p>
-          <p>Tồn kho: {data.stock}</p>
+          <p>Product: {data.product}</p>
+          <p>Price: {data.price}</p>
+          <p>Stock: {data.stock}</p>
         </div>
       )}
     </div>
-  );
+  )
 }
