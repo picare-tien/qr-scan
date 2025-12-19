@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Html5Qrcode } from "html5-qrcode"
+import { Html5Qrcode } from "html5-qrcode/minified/html5-qrcode.min.js"
 
 type Product = {
   product: string
@@ -8,17 +8,15 @@ type Product = {
 }
 
 export default function App() {
-  const qrRef = useRef<HTMLDivElement | null>(null)
+  const qrRef = useRef<HTMLDivElement>(null!)
   const qrScannerRef = useRef<Html5Qrcode | null>(null)
 
-  const [result, setResult] = useState<string>("")
+  const [result, setResult] = useState("")
   const [data, setData] = useState<Product | null>(null)
 
   const startScan = async () => {
-    if (!qrRef.current) return
-
     if (!qrScannerRef.current) {
-      qrScannerRef.current = new Html5Qrcode(qrRef.current.id)
+      qrScannerRef.current = new Html5Qrcode("qr-reader")
     }
 
     await qrScannerRef.current.start(
@@ -55,11 +53,7 @@ export default function App() {
 
       <button onClick={startScan}>Quét QR</button>
 
-      <div
-        id="qr-reader"
-        ref={qrRef}
-        style={{ width: 300, marginTop: 20 }}
-      />
+      <div id="qr-reader" ref={qrRef} style={{ width: 300, marginTop: 20 }} />
 
       {result && <p>Code: {result}</p>}
 
