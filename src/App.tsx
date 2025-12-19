@@ -19,14 +19,21 @@ export default function App() {
       qrScannerRef.current = new Html5Qrcode("qr-reader")
     }
 
+    const onScanSuccess = async (decodedText: string) => {
+  setResult(decodedText)
+
+  if (qrScannerRef.current) {
+    await qrScannerRef.current.stop()
+    await qrScannerRef.current.clear()
+    qrScannerRef.current = null
+  }
+
+  await callWebhook(decodedText)
+}
     await qrScannerRef.current.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: 250 },
-      async (decodedText: string) => {
-        setResult(decodedText)
-        await qrScannerRef.current?.stop()
-        callWebhook(decodedText)
-      }
+      onScanSuccess ,() => {}
     )
   }
 
