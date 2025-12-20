@@ -36,7 +36,7 @@ export default function App() {
       { fps: 10, qrbox: 250,
       formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE, 
         Html5QrcodeSupportedFormats.CODE_128]  
-      },
+      } as any,
       onScanSuccess ,() => {}
     )
   }
