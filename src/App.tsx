@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode,Html5QrcodeSupportedFormats } from "html5-qrcode"
 
+
 type Product = {
   product: string
   price: number
@@ -32,15 +33,10 @@ export default function App() {
 }
     await qrScannerRef.current.start(
       { facingMode: "environment" },
-      { 
-        fps: 10, 
-        qrbox: 250 ,
-      
-      formatsToSupport:[
-        Html5QrcodeSupportedFormats.QR_CODE,
-        Html5QrcodeSupportedFormats.CODE_128
-      ]
-    },
+      { fps: 10, qrbox: 250,
+      supportedFormats: [Html5QrcodeSupportedFormats.QR_CODE, 
+        Html5QrcodeSupportedFormats.CODE_128]  
+      },
       onScanSuccess ,() => {}
     )
   }
