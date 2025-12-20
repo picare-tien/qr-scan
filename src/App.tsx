@@ -34,7 +34,7 @@ export default function App() {
     await qrScannerRef.current.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: 250,
-      supportedFormats: [Html5QrcodeSupportedFormats.QR_CODE, 
+      formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE, 
         Html5QrcodeSupportedFormats.CODE_128]  
       },
       onScanSuccess ,() => {}
