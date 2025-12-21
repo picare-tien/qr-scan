@@ -49,12 +49,17 @@ export default function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
         })
-  console.log("Status:", res.status)
+ console.log("Status:", res.status)
     console.log("Headers:", res.headers.get("content-type"))
 
     const text = await res.text()
     console.log("Raw response:", text)
 
+
+ if (!res.ok) throw new Error("Webhook error")
+
+    const json: Product = await res.json()
+    setData(json)
   } catch (err) {
     console.error(err)
   }
