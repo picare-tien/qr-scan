@@ -44,22 +44,21 @@ export default function App() {
   }
 
   const callWebhook = async (code: string) => {
-    try {const res = await fetch("https://eclatduteint.vn/webhook-test/qrcode", {
+  try {
+    const url = `https://eclatduteint.vn/webhook/qrcode?code=${encodeURIComponent(code)}`
+
+    const res = await fetch(url, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
-        })
- console.log("Status:", res.status)
-    console.log("Headers:", res.headers.get("content-type"))
+    })
 
     const text = await res.text()
-    console.log("Raw response:", text)
+    console.log("RAW:", text)
 
+    if (!text) return
 
- if (!res.ok) throw new Error("Webhook error")
-
-    const json: Product = await res.json()
+    const json = JSON.parse(text)
     setData(json)
+
   } catch (err) {
     console.error(err)
   }
