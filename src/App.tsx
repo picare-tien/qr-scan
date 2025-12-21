@@ -44,7 +44,7 @@ export default function App() {
   }
 
   const callWebhook = async (code: string) => {
-    try {const res = await fetch("https://eclatduteint.vn/webhook/qrcode", {
+    try {const res = await fetch("https://eclatduteint.vn/webhook-test/qrcode", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
