@@ -51,13 +51,22 @@ export default function App() {
       method: "GET",
     })
 
-    const text = await res.text()
-    console.log("RAW:", text)
+     const json = await res.json()
+    console.log("Webhook raw json:", json)
 
-    if (!text) return
+    if (!Array.isArray(json) || json.length === 0) {
+      console.error("Webhook trả về không đúng format")
+      return
+    }
 
-    const json = JSON.parse(text)
-    setData(json)
+    const item = json[0]
+
+    setData({
+      product: item.Product,
+      price: item.Price,
+      stock: item.Stock,
+    })
+
 
   } catch (err) {
     console.error(err)
