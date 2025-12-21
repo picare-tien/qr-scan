@@ -44,16 +44,20 @@ export default function App() {
   }
 
   const callWebhook = async (code: string) => {
-    const res = await fetch("https://eclatduteint.vn/webhook/qrcode", {
+    try {const res = await fetch("https://eclatduteint.vn/webhook/qrcode", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
-    })
+        })
+ if (!res.ok) throw new Error("Webhook error")
 
     const json: Product = await res.json()
     setData(json)
+  } catch (err) {
+    console.error(err)
   }
-
+}
+ 
   useEffect(() => {
     return () => {
       qrScannerRef.current?.stop().catch(() => {})
