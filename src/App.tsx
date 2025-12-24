@@ -13,7 +13,7 @@ export default function App() {
   const qrScannerRef = useRef<Html5Qrcode | null>(null)
 
   const [result, setResult] = useState("")
-  const [data, setData] = useState<{ product: string; price: number; stock: number }[]>(
+  const [data, setData] = useState<{ barcode: string; product: string; quantity: number }[]>(
     []
   )
 
@@ -62,9 +62,10 @@ export default function App() {
     }
 
      const mappedData = json.map(item => ({
-      product: item.Product,
-      price: item.Price,
-      stock: item.Stock,
+      barcode:item.barcode,
+      product: item.Product_name,
+      quantity: item.quantity,
+      //stock: item.Stock,
     }))
     
     setData(mappedData)
@@ -93,9 +94,9 @@ export default function App() {
       {result && <p>Code: {result}</p>}
       {data.map((item,index) => (
         <div key={index}>
-          <p>Sản phẩm: {item.product}</p>
-          <p>Price: {item.price}</p>
-          <p>Stock: {item.stock}</p>
+          <p>Mã sản phẩm: {item.barcode}</p>
+          <p>Tên sản phẩm: {item.product}</p>
+          <p>Số lượng: {item.quantity}</p>
         </div>
       ))}
     </div>
