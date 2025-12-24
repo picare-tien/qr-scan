@@ -63,7 +63,7 @@ export default function App() {
 
      const mappedData = json.map(item => ({
       barcode:item.barcode,
-      product: item.Product_name,
+      product: item.product_name,
       quantity: item.quantity,
       //stock: item.Stock,
     }))
