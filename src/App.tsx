@@ -25,7 +25,7 @@ export default function App() {
     const onScanSuccess = async (decodedText: string) => {
       console.log("Scaned code: ", decodedText)
   setResult(decodedText)
-  await callWebhook(decodedText)
+  //await callWebhook(decodedText)
 
   if (qrScannerRef.current) {
     await qrScannerRef.current.stop()
