@@ -2,18 +2,20 @@ import { useEffect, useRef, useState } from "react"
 import { Html5Qrcode,Html5QrcodeSupportedFormats } from "html5-qrcode"
 
 
-type Product = {
-  product: string
-  price: number
-  stock: number
-}
+//type Product = {
+ // product: string
+ // price: number
+ // stock: number
+//}
 
 export default function App() {
   const qrRef = useRef<HTMLDivElement>(null!)
   const qrScannerRef = useRef<Html5Qrcode | null>(null)
 
   const [result, setResult] = useState("")
-  const [data, setData] = useState<Product | null>(null)
+  const [data, setData] = useState<{ product: string; price: number; stock: number }[]>(
+    []
+  )
 
   const startScan = async () => {
     if (!qrScannerRef.current) {
@@ -59,13 +61,14 @@ export default function App() {
       return
     }
 
-    const item = json[0]
-
-    setData({
+     const mappedData = json.map(item => ({
       product: item.Product,
       price: item.Price,
       stock: item.Stock,
-    })
+    }))
+    
+    setData(mappedData)
+    
 
 
   } catch (err) {
@@ -88,14 +91,13 @@ export default function App() {
       <div id="qr-reader" ref={qrRef} style={{ width: 300, marginTop: 20 }} />
 
       {result && <p>Code: {result}</p>}
-
-      {data && (
-        <div>
-          <p>Product: {data.product}</p>
-          <p>Price: {data.price}</p>
-          <p>Stock: {data.stock}</p>
+      {data.map((item,index) => (
+        <div key={index}>
+          <p>Sản phẩm: {item.product}</p>
+          <p>Price: {item.price}</p>
+          <p>Stock: {item.stock}</p>
         </div>
-      )}
+      ))}
     </div>
   )
 }
