@@ -39,9 +39,9 @@ export default function App() {
 }
     await qrScannerRef.current.start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: 250,
-      formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE, 
-        Html5QrcodeSupportedFormats.CODE_128]  
+      { fps: 5, qrbox: { width: 320, height: 120 },
+      formatsToSupport: [Html5QrcodeSupportedFormats.CODE_128],
+      disableFlip: true,
       } as any,
       onScanSuccess ,() => {}
     )
