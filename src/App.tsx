@@ -13,7 +13,7 @@ export default function App() {
   const qrScannerRef = useRef<Html5Qrcode | null>(null)
 
   const [result, setResult] = useState("")
-  const [data, setData] = useState<{ barcode: string; product: string; quantity: number }[]>(
+  const [data, setData] = useState<{ barcode: string; tensanpham: string; quantity: number }[]>(
     []
   )
 
@@ -49,7 +49,7 @@ export default function App() {
 
   const callWebhook = async (code: string) => {
   try {
-    const url = `https://eclatduteint.vn/webhook/qrcode?code=${encodeURIComponent(code)}`
+    const url = `https://eclatduteint.vn/webhook-test/qrcode?code=${encodeURIComponent(code)}`
 
     const res = await fetch(url, {
       method: "GET",
@@ -65,7 +65,7 @@ export default function App() {
 
      const mappedData = json.map(item => ({
       barcode:item.barcode,
-      product: item.product_name,
+      tensanpham: item.tensanpham,
       quantity: item.quantity,
       //stock: item.Stock,
     }))
@@ -97,7 +97,7 @@ export default function App() {
       {data.map((item,index) => (
         <div key={index}>
           <p>Mã sản phẩm: {item.barcode}</p>
-          <p>Tên sản phẩm: {item.product}</p>
+          <p>Tên sản phẩm: {item.tensanpham}</p>
           <p>Số lượng: {item.quantity}</p>
         </div>
       ))}
