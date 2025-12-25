@@ -10,6 +10,7 @@ import { Html5Qrcode,Html5QrcodeSupportedFormats } from "html5-qrcode"
 
 export default function App() {
   const qrRef = useRef<HTMLDivElement>(null!)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const qrScannerRef = useRef<Html5Qrcode | null>(null)
 
   const [result, setResult] = useState("")
@@ -60,6 +61,7 @@ export default function App() {
 
     if (!Array.isArray(json) || json.length === 0) {
       console.error("Webhook trả về không đúng format")
+      setData([])
       return
     }
 
@@ -78,6 +80,26 @@ export default function App() {
     console.error(err)
   }
 }
+const handleCapture = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+
+  const formData = new FormData()
+  formData.append("image", file)
+  formData.append("barcode", result)
+
+  await fetch(
+    "https://script.google.com/macros/s/XXX/exec", // 🔴 URL Google Script
+    {
+      method: "POST",
+      body: formData,
+    }
+  )
+
+  alert("✅ Đã lưu hình sản phẩm")
+}
  
   useEffect(() => {
     return () => {
@@ -86,21 +108,45 @@ export default function App() {
   }, [])
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>QR / Barcode Scanner</h2>
+  <div style={{ padding: 20 }}>
+    <h2>QR / Barcode Scanner</h2>
 
-      <button onClick={startScan}>Quét QR</button>
+    <button onClick={startScan}>Quét QR</button>
 
-      <div id="qr-reader" ref={qrRef} style={{ width: 300, marginTop: 20 }} />
+    <div
+      id="qr-reader"
+      ref={qrRef}
+      style={{ width: 300, height: 260, marginTop: 20 }}
+    />
 
-      {result && <p>Code: {result}</p>}
-      {data.map((item,index) => (
-        <div key={index}>
-          <p>Mã sản phẩm: {item.barcode}</p>
-          <p>Tên sản phẩm: {item.tensanpham}</p>
-          <p>Số lượng: {item.quantity}</p>
-        </div>
-      ))}
-    </div>
-  )
+    {result && <p>Code: {result}</p>}
+
+    {data.map((item, index) => (
+      <div key={index}>
+        <p>Mã sản phẩm: {item.barcode}</p>
+        <p>Tên sản phẩm: {item.tensanpham}</p>
+        <p>Số lượng: {item.quantity}</p>
+      </div>
+    ))}
+
+    {/* 👉 NÚT CHỤP HÌNH – CHỈ HIỆN KHI CÓ DATA */}
+    {data.length > 0 && (
+      <div style={{ marginTop: 20 }}>
+        <button onClick={() => fileInputRef.current?.click()}>
+          📸 Chụp hình sản phẩm
+        </button>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          style={{ display: "none" }}
+          onChange={handleCapture}
+        />
+      </div>
+    )}
+  </div>
+)
+
 }
