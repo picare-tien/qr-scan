@@ -25,7 +25,7 @@ export default function App() {
     const onScanSuccess = async (decodedText: string) => {
       console.log("Scaned code: ", decodedText)
   setResult(decodedText)
-  //await callWebhook(decodedText)
+  await callWebhook(decodedText)
 
   if (qrScannerRef.current) {
     await qrScannerRef.current.stop()
@@ -47,7 +47,7 @@ export default function App() {
 
   const callWebhook = async (code: string) => {
   try {
-    const url = `https://eclatduteint.vn/webhook-test/qrcode?code=${encodeURIComponent(code)}`
+    const url = `https://eclatduteint.vn/webhook/qrcode?code=${encodeURIComponent(code)}`
 
     const res = await fetch(url, {
       method: "GET",
