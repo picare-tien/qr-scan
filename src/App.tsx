@@ -60,23 +60,35 @@ export default function App() {
   }
 
   // 🔹 CHỤP HÌNH SẢN PHẨM
-  const handleCaptureProduct = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+ const handleCaptureProduct = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+
+  reader.onloadend = async () => {
+    const base64 = (reader.result as string).split(",")[1]
 
     const formData = new FormData()
-    formData.append("image", file)
+    formData.append("image", base64)
     formData.append("barcode", result)
 
-    await fetch(
+    const res = await fetch(
       "https://script.google.com/macros/s/AKfycbzOhTBK0dg9LrRq3IX2JNtLHoCz4xbN6zwyDa3p5GnkkNQZDsGhmkBJKRqpDpFFKQwZ/exec",
-      { method: "POST", body: formData }
+      {
+        method: "POST",
+        body: formData,
+      }
     )
 
-    alert("✅ Đã lưu hình sản phẩm")
+    const text = await res.text()
+    alert(text === "OK" ? "✅ Đã lưu hình" : "❌ Lỗi: " + text)
   }
+
+  reader.readAsDataURL(file)
+}
 
   return (
     <div style={{ padding: 20 }}>
