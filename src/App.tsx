@@ -24,16 +24,18 @@ export default function App() {
 
     const onScanSuccess = async (decodedText: string) => {
       console.log("Scaned code: ", decodedText)
-  setResult(decodedText)
-  await callWebhook(decodedText)
 
-  if (qrScannerRef.current) {
-    await qrScannerRef.current.stop()
-    await qrScannerRef.current.clear()
+   if (!qrScannerRef.current) return
+    const scanner = qrScannerRef.current
     qrScannerRef.current = null
-  }
-
+    await scanner.stop()
+    await scanner.clear()
+   
+  
+      setResult(decodedText)
   await callWebhook(decodedText)
+
+  
 }
     await qrScannerRef.current.start(
       { facingMode: "environment" },
