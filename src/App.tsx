@@ -8,7 +8,7 @@ export default function App() {
 
   const [result, setResult] = useState("")
   const [data, setData] = useState<
-    { barcode: string; tensanpham: string; quantity: number }[]
+    { Ngay: string; tenkhachhang: string; SoluongSP: number }[]
   >([])
 
   // 🔹 CHỤP ẢNH BARCODE → ĐỌC BARCODE
@@ -49,9 +49,9 @@ export default function App() {
 
       setData(
         json.map((item) => ({
-          barcode: item.barcode,
-          tensanpham: item.tensanpham,
-          quantity: item.quantity,
+          Ngay: item.NgayPhieu,
+          tenkhachhang: item.tenkhachhang,
+          SoluongSP: item.total,
         }))
       )
     } catch (err) {
@@ -112,9 +112,9 @@ export default function App() {
 
       {data.map((item, index) => (
         <div key={index}>
-          <p>Mã SP: {item.barcode}</p>
-          <p>Tên SP: {item.tensanpham}</p>
-          <p>Số lượng: {item.quantity}</p>
+          <p>Ngày bán: {item.Ngay}</p>
+          <p>Tên Khách hàng: {item.tenkhachhang}</p>
+          <p>Số lượng sản phẩm: {item.SoluongSP}</p>
         </div>
       ))}
 
