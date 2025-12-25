@@ -91,7 +91,7 @@ const handleCapture = async (
   formData.append("barcode", result)
 
   await fetch(
-    "https://script.google.com/macros/s/XXX/exec", // 🔴 URL Google Script
+    "https://script.google.com/macros/s/AKfycbzOhTBK0dg9LrRq3IX2JNtLHoCz4xbN6zwyDa3p5GnkkNQZDsGhmkBJKRqpDpFFKQwZ/exec", // 🔴 URL Google Script
     {
       method: "POST",
       body: formData,
