@@ -49,7 +49,7 @@ export default function App() {
 
   const callWebhook = async (code: string) => {
   try {
-    const url = `https://eclatduteint.vn/webhook-test/qrcode?code=${encodeURIComponent(code)}`
+    const url = `https://eclatduteint.vn/webhook/qrcode?code=${encodeURIComponent(code)}`
 
     const res = await fetch(url, {
       method: "GET",
@@ -86,21 +86,61 @@ export default function App() {
   }, [])
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>QR / Barcode Scanner</h2>
+  <div style={styles.container}>
+    <h2 style={styles.title}>📷 QR / Barcode Scanner</h2>
 
-      <button onClick={startScan}>Quét QR</button>
-
-      <div id="qr-reader" ref={qrRef} style={{ width: 300, marginTop: 20 }} />
-
-      {result && <p>Code: {result}</p>}
-      {data.map((item,index) => (
-        <div key={index}>
-          <p>Mã sản phẩm: {item.barcode}</p>
-          <p>Tên sản phẩm: {item.tensanpham}</p>
-          <p>Số lượng: {item.quantity}</p>
-        </div>
-      ))}
+    <div style={styles.card}>
+      <button style={styles.scanButton} onClick={startScan}>
+        🔍 Bắt đầu quét
+      </button>
     </div>
-  )
+
+    <div style={styles.card}>
+      <div id="qr-reader" ref={qrRef} style={styles.camera} />
+    </div>
+
+    {result && (
+      <div style={styles.card}>
+        <p style={styles.label}>Mã quét được</p>
+        <p style={styles.code}>{result}</p>
+      </div>
+    )}
+
+    {data.map((item, index) => (
+      <div key={index} style={styles.card}>
+        <p><b>Mã sản phẩm:</b> {item.barcode}</p>
+        <p><b>Tên sản phẩm:</b> {item.tensanpham}</p>
+        <p><b>Số lượng:</b> {item.quantity}</p>
+      </div>
+    ))}
+  </div>
+)
 }
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    padding: 16,
+    maxWidth: 420,
+    margin: "0 auto",
+  },
+  title: { textAlign: "center", marginBottom: 16 },
+  card: {
+    background: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+  },
+  scanButton: {
+    width: "100%",
+    padding: 14,
+    fontSize: 16,
+    background: "#2563eb",
+    color: "#fff",
+    border: "none",
+    borderRadius: 10,
+  },
+  camera: { width: "100%" },
+  label: { fontSize: 13, color: "#666" },
+  code: { fontSize: 18, fontWeight: 600 },
+}
+
