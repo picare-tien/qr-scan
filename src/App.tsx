@@ -139,7 +139,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "none",
     borderRadius: 10,
   },
-  camera: { width: "100%" },
+  camera: { width: "100%", height: 260,maxWidth:320, margin: "0 auto" },
   label: { fontSize: 13, color: "#666" },
   code: { fontSize: 18, fontWeight: 600 },
 }
