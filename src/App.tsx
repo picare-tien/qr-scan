@@ -113,7 +113,7 @@ export default function App() {
           <div
       id="qr-reader"
       ref={qrRef}
-      style={{ width: 300, height: 260, marginTop: 20 }}
+      style={{ width: 200, height: 100, marginTop: 10 }}
     />
 
 
