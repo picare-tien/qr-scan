@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import {  useRef, useState } from "react"
 import { Html5Qrcode,Html5QrcodeSupportedFormats } from "html5-qrcode"
 
 
