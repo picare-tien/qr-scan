@@ -1,34 +1,45 @@
-import {  useRef, useState } from "react"
-import { Html5Qrcode } from "html5-qrcode"
+import { useEffect, useRef, useState } from "react"
+import { Html5Qrcode,Html5QrcodeSupportedFormats } from "html5-qrcode"
+
 
 export default function App() {
+  const qrRef = useRef<HTMLDivElement>(null!)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const photoBarcodeRef = useRef<HTMLInputElement>(null)
-  const scannerRef = useRef<Html5Qrcode | null>(null)
+  const qrScannerRef = useRef<Html5Qrcode | null>(null)
 
   const [result, setResult] = useState("")
-  const [data, setData] = useState<
-    { Ngay: string; tenkhachhang: string; SoluongSP: number }[]
-  >([])
+  const [data, setData] = useState<{ Ngay: string; tenkhachhang: string; SoluongSP: number }[]>(
+    []
+  )
 
-  // 🔹 CHỤP ẢNH BARCODE → ĐỌC BARCODE
-  const handleBarcodeImage = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (!scannerRef.current) {
-      scannerRef.current = new Html5Qrcode("hidden-reader")
+  const startScan = async () => {
+    if (!qrScannerRef.current) {
+      qrScannerRef.current = new Html5Qrcode("qr-reader")
     }
 
-    try {
-      const decodedText = await scannerRef.current.scanFile(file, true)
+    const onScanSuccess = async (decodedText: string) => {
+      console.log("Scaned code: ", decodedText)
+
+   if (!qrScannerRef.current) return
+    const scanner = qrScannerRef.current
+    qrScannerRef.current = null
+    await scanner.stop()
+    await scanner.clear()
+   
+  
       setResult(decodedText)
-      await callWebhook(decodedText)
-    } catch (err) {
-      alert("❌ Không đọc được barcode, chụp rõ hơn")
-    }
+  await callWebhook(decodedText)
+
+  
+}
+    await qrScannerRef.current.start(
+      { facingMode: "environment" },
+      { fps: 5, qrbox: { width: 320, height: 120 },
+      formatsToSupport: [Html5QrcodeSupportedFormats.CODE_128],
+      disableFlip: true,
+      } as any,
+      onScanSuccess ,() => {}
+    )
   }
 
   // 🔹 GỌI WEBHOOK
@@ -95,18 +106,16 @@ export default function App() {
       <h2>📷 Chụp Barcode → Tìm đơn</h2>
 
       {/* NÚT CHỤP BARCODE */}
-      <button onClick={() => photoBarcodeRef.current?.click()}>
-        📸 Chụp barcode
-      </button>
+    <button onClick={startScan}>Quét QR</button>
+        📸 Quét barcode
+   
 
-      <input
-        ref={photoBarcodeRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        style={{ display: "none" }}
-        onChange={handleBarcodeImage}
-      />
+          <div
+      id="qr-reader"
+      ref={qrRef}
+      style={{ width: 300, height: 260, marginTop: 20 }}
+    />
+
 
       {result && <p>Barcode: {result}</p>}
 
